@@ -533,8 +533,43 @@ export const WORLDS: World[] = [
 
   // ----------------------------------------------------------------- 11
   {
-    id: "retention-expansion",
+    id: "the-guild",
     index: 11,
+    title: "The Guild",
+    subtitle: "Build your team",
+    objective: "Scale from co-founders to an org that works — hiring, culture, and structure.",
+    icon: "🧑‍🤝‍🧑",
+    accent: "sky",
+    lessons: [
+      {
+        id: "scaling-team",
+        title: "Scaling the team",
+        blocks: [
+          { kind: "callout", tone: "key", title: "Co-founders cover the core", text: "The skills to get from $0 to ~$100k in revenue should live in your co-founding team — not your hires. With no salary budget early on, the only way to get game-changing talent is as co-founders. Fewer is better: pick people who each cover more than one critical skill." },
+          { kind: "p", text: "Your first ~7 hires (going 3→10) define your culture for years. Hire proactive, fast-learning generalists who'll happily wear many hats — not narrow specialists yet." },
+          { kind: "callout", tone: "warn", title: "Seniority ≠ management", text: "A classic mistake: assuming early/senior people want or are able to run teams. Your best engineer may just want to code. Don't auto-promote people into management." },
+          { kind: "callout", tone: "info", title: "Doubling the team ≠ doubling output", text: "Going 10→20, productivity grows less than proportionally — you now pay a tax of management, delegation, coordination and communication. Plan for it." },
+          { kind: "compare", left: { title: "Lead", items: ["Senior individual contributor", "Title + pay bump", "Spearheads a team", "Does NOT manage people"] }, right: { title: "Manager", items: ["Owns a key KPI", "Delegates & sees tasks through", "Manages people (the human side)", "Hires, retains, lets go"] } },
+          { kind: "list", items: ["Project managers: no direct reports — the manager's right hand, coordinating work.", "Directors: own a whole branch, with managers reporting to them; metrics-driven; sway company direction.", "Officers: C-level (often the co-founders).", "At 25–50: standardize salaries so comparable roles earn comparable pay — sometimes raise a manager when a senior hire below them earns more."] },
+        ],
+      },
+    ],
+    questions: [
+      { id: "tg1", type: "mcq", prompt: "The skills needed to get a startup from $0 to ~$100k in revenue should mainly come from…", options: ["Your first hires", "Your co-founding team", "Outside consultants", "An agency"], correct: 1, explanation: "Early on you can't pay for top talent, so the critical 0→$100k skills must be covered by co-founders. You bring game-changers as co-founders, not hires.", concept: "co-founder skill coverage" },
+      { id: "tg2", type: "mcq", prompt: "When choosing co-founders, you ideally want…", options: ["As many as possible for more skills", "People who each cover more than one critical skill, keeping the team small", "Only people identical to you", "Pure investors"], correct: 1, explanation: "Fewer co-founders is better — each should cover multiple critical skills so you keep the team (and the mouths to feed on no salary) as small as possible.", concept: "fewer co-founders" },
+      { id: "tg3", type: "mcq", prompt: "What kind of people should your first ~7 hires (3→10) be?", options: ["Deep specialists in one narrow task", "Proactive, fast-learning generalists who wear many hats", "Experienced managers", "Part-time contractors"], correct: 1, explanation: "Your first hires define your culture. At this stage you need flexible generalists willing to do work far outside their job title — not narrow specialists.", concept: "first hires / culture" },
+      { id: "tg4", type: "mcq", prompt: "SlideBean added a Myers-Briggs personality test to hiring mainly to…", options: ["Measure intelligence", "Check personality compatibility with teammates and the direct manager", "Replace interviews", "Set salaries"], correct: 1, explanation: "It was used to gauge whether a candidate's personality would fit with the rest of the team — especially their teammates and direct superior.", concept: "team fit" },
+      { id: "tg5", type: "truefalse", prompt: "Seniority in the company means a person wants and is qualified to manage a team.", options: ["True", "False"], correct: 1, explanation: "False — and assuming so is a common scaling mistake. Your most senior engineer may just want to code. Seniority is not management skill; don't auto-promote.", concept: "seniority ≠ management" },
+      { id: "tg6", type: "mcq", prompt: "When you double a team from ~10 to ~20 people, productivity usually…", options: ["Doubles", "More than doubles", "Grows less than proportionally, due to coordination & management overhead", "Stays exactly flat"], correct: 2, explanation: "You'd expect double, but you now pay for management, delegation, coordination and communication — so output grows less than proportionally.", concept: "coordination overhead" },
+      { id: "tg7", type: "mcq", prompt: "In SlideBean's structure, a 'Lead' is…", options: ["A manager with direct reports", "A senior individual contributor with a title/pay bump who spearheads a team but doesn't manage people", "An external advisor", "A C-level officer"], correct: 1, explanation: "Leads are senior ICs recognized with a title and pay bump. Many don't want to manage people — their job is to be great at their craft and lead by example.", concept: "lead vs manager" },
+      { id: "tg8", type: "mcq", prompt: "A 'Director' in this structure is best defined by…", options: ["Writing the most code", "Owning a whole branch with managers reporting to them and making metrics-driven decisions", "Having the highest salary", "Being the founder's friend"], correct: 1, explanation: "Directors own large branches (with one or more managers reporting to them), deeply understand the work, make metrics-driven calls, and influence company direction.", concept: "director" },
+    ],
+  },
+
+  // ----------------------------------------------------------------- 12
+  {
+    id: "retention-expansion",
+    index: 12,
     title: "The Kingdom",
     subtitle: "Keep & grow customers",
     objective: "Master churn, retention curves, and why net revenue retention can exceed 100%.",
@@ -574,10 +609,10 @@ export const WORLDS: World[] = [
     ],
   },
 
-  // ----------------------------------------------------------------- 12
+  // ----------------------------------------------------------------- 13
   {
     id: "the-exit",
-    index: 12,
+    index: 13,
     title: "The Summit",
     subtitle: "The exit",
     objective: "Tell the exit types apart and survive the M&A gauntlet to the close.",

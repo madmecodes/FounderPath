@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { WORLDS } from "@/lib/curriculum";
 import { levelFromXp } from "@/lib/progress";
 import type { GrowthPath, PlayerState, Question, World } from "@/lib/types";
+import StartupTower from "./StartupTower";
 
 type Phase = "choose" | "question" | "levelup" | "victory";
 
@@ -51,8 +52,20 @@ export default function PlaySession({
   }, [qIdx, levelIdx, phase]);
 
   const questions = questionsFor(world, chosenPath);
-  const q = questions[qIdx];
+  const q = questions[Math.min(qIdx, questions.length - 1)];
   const { level } = levelFromXp(player.xp);
+
+  // How much of the startup tower is built (0..1 of the whole journey).
+  const total = WORLDS.length;
+  const buildFraction =
+    phase === "victory"
+      ? 1
+      : phase === "levelup"
+      ? (levelIdx + 1) / total
+      : phase === "choose"
+      ? levelIdx / total
+      : (levelIdx + qIdx / Math.max(1, questions.length)) / total;
+  const floorsBuilt = phase === "victory" ? total : phase === "levelup" ? levelIdx + 1 : levelIdx;
 
   const goToLevel = (nextIdx: number) => {
     if (nextIdx >= WORLDS.length) {
@@ -123,14 +136,14 @@ export default function PlaySession({
 
   return (
     <main className="relative min-h-[100dvh] overflow-hidden">
-      {/* fixed pixel-scene background */}
+      {/* fixed pixel-sky background */}
       <div className="fixed inset-0 -z-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/scene.png" alt="" className="pixelated h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-ink/80 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/70 to-ink/92" />
       </div>
 
-      <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col px-4 py-4">
+      <div className="mx-auto flex h-[100dvh] max-w-md flex-col px-3 pb-3 pt-3">
         <Hud
           level={level}
           xp={player.xp}
@@ -142,7 +155,13 @@ export default function PlaySession({
           showProgress={phase === "question"}
         />
 
-        <div className="flex flex-1 flex-col justify-center py-4">
+        {/* the startup, building block by block */}
+        <div className="relative mt-2 h-[32vh] min-h-[160px] shrink-0">
+          <StartupTower fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
+        </div>
+
+        {/* quiz / transitions — scrollable so long questions always fit */}
+        <div className="mt-2 flex flex-1 flex-col overflow-y-auto pb-2">
           <AnimatePresence mode="wait">
             {phase === "choose" && world.branching && (
               <motion.div
@@ -246,11 +265,11 @@ function Hud({
           <div className="h-2 flex-1 overflow-hidden rounded-full border border-line bg-panel2">
             <div
               className="h-full bg-gradient-to-r from-gold to-goldlt transition-all duration-300"
-              style={{ width: `${Math.round(((qIdx) / total) * 100)}%` }}
+              style={{ width: `${Math.min(100, Math.round((Math.min(qIdx, total) / total) * 100))}%` }}
             />
           </div>
           <span className="font-pixel text-[8px] text-muted">
-            {qIdx + 1}/{total}
+            {Math.min(qIdx + 1, total)}/{total}
           </span>
         </div>
       )}
