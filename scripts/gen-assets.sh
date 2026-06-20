@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # Generates the FoundrQuest pixel-art asset family (sequential = reliable).
 set -u
-GEN="$HOME/.claude/skills/gen-image.js"
+# Uses the provider-fallback runner: OpenAI gpt-image-1 -> OpenRouter Gemini.
+GEN="$HOME/.claude/skills/gen-image.sh"
 OUT="/Users/themadme/Projects/foundrquest/public/assets"
 mkdir -p "$OUT"
 
-STYLE="16-bit retro pixel-art game icon, crisp pixels, dark navy game background, warm golden rim lighting, vibrant saturated palette, centered single subject, cohesive fantasy RPG art style, no text, no words, no watermark"
+STYLE="16-bit retro isometric pixel-art game icon, crisp clean pixels, dark navy game background, warm golden rim lighting, vibrant saturated palette, single centered subject, cohesive fantasy RPG art style, no text, no words, no watermark"
 
 gen () { # name  prompt  [size]
   local name="$1"; local prompt="$2"; local size="${3:-1024x1024}"
   if [ -f "$OUT/$name.png" ]; then echo "skip $name (exists)"; return; fi
   echo ">>> $name"
-  node "$GEN" "$prompt" "$OUT/$name.png" "$size" medium || echo "FAILED $name"
+  bash "$GEN" "$prompt" "$OUT/$name.png" "$size" medium || echo "FAILED $name"
 }
 
 # Hero (portrait) — FitQuest-style adventurer overlooking a startup world
