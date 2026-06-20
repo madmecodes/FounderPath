@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-pixel: "Press Start 2P";
+  --font-body: "VT323";
+}
+
+html,
+body {
+  background: var(--bg, #0b0e14);
+  color: #e9e4d6;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 20px; /* VT323 is small; scale up for readability */
+  background-color: #0b0e14;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(90, 169, 230, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(245, 180, 36, 0.07), transparent 45%);
+  min-height: 100vh;
+}
+
+/* Pixel rendering for generated sprites */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Thin pixel scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0e14;
+}
+::-webkit-scrollbar-thumb {
+  background: #252c3a;
+  border: 2px solid #0b0e14;
+}
+
+@layer components {
+  .pixel-card {
+    @apply bg-panel border-2 border-line rounded-lg shadow-pixel;
+  }
+  .pixel-btn {
+    @apply font-pixel text-[11px] sm:text-xs uppercase tracking-wide rounded-md
+           px-4 py-3 border-2 border-black/40 transition-transform
+           active:translate-y-1 active:shadow-none select-none;
+  }
+  .pixel-btn-gold {
+    @apply pixel-btn bg-gold text-ink shadow-pixel-gold hover:bg-goldlt;
+  }
+  .pixel-btn-dark {
+    @apply pixel-btn bg-panel2 text-parchment border-line shadow-pixel hover:bg-line;
+  }
+  .label-quest {
+    @apply font-pixel text-[10px] tracking-[0.2em] text-quest uppercase;
+  }
+  .h-pixel {
+    @apply font-pixel leading-tight;
+  }
+}
+
+/* Body text using VT323 reads large; tighten line spacing */
+p,
+li {
+  line-height: 1.35;
+}
