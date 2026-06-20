@@ -75,9 +75,9 @@ export default function CityScene({
   const ready = h > 0 && w > 0;
   const formH = Math.min(h * 0.85, formHeight || h * 0.45);
   const sky = h - formH; // open scene above the form
-  // tower sized so it always fits the open sky and the screen width
-  const buildingH = Math.max(120, Math.min(sky * 0.74, w * 0.9));
-  const towerW = buildingH * 0.6667;
+  // a modest tower tucked to the SIDE (never centered between HUD and form)
+  const towerW = Math.max(96, Math.min(w * 0.34, 190, sky * 0.62));
+  const buildingH = towerW / 0.6667;
 
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden bg-ink">
@@ -94,7 +94,7 @@ export default function CityScene({
         <div
           data-parallax data-fx="1.1"
           className="absolute"
-          style={{ bottom: formH, height: buildingH, width: towerW, left: "50%", marginLeft: -towerW / 2 }}
+          style={{ bottom: formH - 4, height: buildingH, width: towerW, left: "4%" }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
