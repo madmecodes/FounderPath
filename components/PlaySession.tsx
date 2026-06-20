@@ -51,6 +51,18 @@ export default function PlaySession({
     lockRef.current = false;
   }, [qIdx, levelIdx, phase]);
 
+  // Measure the live form height so the scene can plant the tower right on top of it.
+  const formRef = useRef<HTMLDivElement>(null);
+  const [formH, setFormH] = useState(0);
+  useEffect(() => {
+    const el = formRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setFormH(el.offsetHeight));
+    ro.observe(el);
+    setFormH(el.offsetHeight);
+    return () => ro.disconnect();
+  }, []);
+
   const questions = questionsFor(world, chosenPath);
   const q = questions[Math.min(qIdx, questions.length - 1)];
   const { level } = levelFromXp(player.xp);
@@ -137,7 +149,7 @@ export default function PlaySession({
   return (
     <main className="relative min-h-[100dvh] overflow-hidden">
       {/* full-screen living parallax scene that builds as you progress */}
-      <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
+      <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} formHeight={formH} />
 
       {/* top HUD glass bar */}
       <div className="absolute inset-x-0 top-0 z-30 mx-auto w-full max-w-md px-3 pt-3">
@@ -153,17 +165,13 @@ export default function PlaySession({
         />
       </div>
 
-      {/* quiz bottom-sheet — floats above the scene, growth stays visible in the sky above it */}
-      <div className="absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md" style={{ height: "56dvh" }}>
-        {/* frosted panel with a feathered top so the scene shows through the seam */}
-        <div
-          className="absolute inset-0 rounded-t-3xl border-t-2 border-line bg-ink/72 backdrop-blur-md"
-          style={{
-            maskImage: "linear-gradient(to bottom, transparent 0, black 60px)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0, black 60px)",
-          }}
-        />
-        <div className="relative flex h-full flex-col overflow-y-auto px-4 pb-5 pt-7">
+      {/* quiz form — a solid panel that hugs its content and sits ABOVE the scene */}
+      <div ref={formRef} className="absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md">
+        {/* soft seam so the scene fades into the form instead of a hard line */}
+        <div className="pointer-events-none absolute inset-x-0 -top-14 h-14 bg-gradient-to-b from-transparent to-ink/95" />
+        {/* the opaque form panel */}
+        <div className="absolute inset-0 rounded-t-3xl border-t-2 border-line bg-ink/95 backdrop-blur-md shadow-[0_-16px_48px_rgba(0,0,0,0.6)]" />
+        <div className="no-scrollbar relative flex max-h-[78dvh] flex-col overflow-y-auto px-4 pb-6 pt-6">
           <AnimatePresence mode="wait">
             {phase === "choose" && world.branching && (
               <motion.div

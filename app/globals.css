@@ -67,6 +67,14 @@ body {
   }
 }
 
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Body text using VT323 reads large; tighten line spacing */
 p,
 li {
