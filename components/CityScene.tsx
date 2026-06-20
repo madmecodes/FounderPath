@@ -3,12 +3,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /**
- * Full-screen parallax diorama behind the quiz. Back-to-front: sky gradient,
- * stars, the distant "sky-city" skyline (fills the whole sky so it's never
- * empty), drifting clouds, then the player's tower + crane + street that build
- * up in front. The whole scene is laid out relative to `formHeight` (the live
- * height of the quiz form) so the tower is always planted right on top of the
- * form, and the glowing construction frontier sits in the clear sky above it.
+ * Background for the quiz: a full-bleed pixel sky-city that never crops awkwardly
+ * (one portrait image, object-cover), with the player's startup tower growing
+ * bottom-up directly on top of the quiz form as `fraction` (0..1) increases.
+ * Deliberately simple and aspect-robust — no fragile multi-layer camera math.
  */
 export default function CityScene({
   fraction,
@@ -23,7 +21,7 @@ export default function CityScene({
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [{ w, h }, setSize] = useState({ w: 0, h: 0 });
-  const bf = Math.max(0.03, Math.min(1, fraction));
+  const bf = Math.max(0.04, Math.min(1, fraction));
 
   useLayoutEffect(() => {
     const el = rootRef.current;
@@ -35,6 +33,7 @@ export default function CityScene({
     return () => ro.disconnect();
   }, []);
 
+  // subtle pointer / tilt parallax (bg drifts a little, tower a bit more)
   useEffect(() => {
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
@@ -53,7 +52,7 @@ export default function CityScene({
       target.x = Math.max(-1, Math.min(1, e.gamma / 35));
       target.y = Math.max(-1, Math.min(1, (e.beta - 45) / 35));
     };
-    const MAXX = 16, MAXY = 8;
+    const MAXX = 14, MAXY = 8;
     const tick = () => {
       cur.x += (target.x - cur.x) * 0.08;
       cur.y += (target.y - cur.y) * 0.08;
@@ -73,81 +72,46 @@ export default function CityScene({
     };
   }, []);
 
-  // ---- geometry (px), laid out around the live quiz-form height ----
   const ready = h > 0 && w > 0;
-  const formH = Math.min(h * 0.82, formHeight || h * 0.46); // the form covers the bottom; the scene owns everything above it
-  const sky = h - formH; // height of the open scene above the form
-  const towerW = Math.min(w * 0.5, 280);
-  const H = towerW / 0.6667; // tower full height (box matches art aspect → fills, no padding)
-  const ground = h - formH; // tower is planted right on top of the form
-  const targetLine = sky * 0.34; // frontier parks here, in the clear sky above the form
-  const camY = Math.max(ground, targetLine + bf * H); // base at the form top until the tower outgrows the sky, then pans
-  const building = bf < 0.999;
+  const formH = Math.min(h * 0.85, formHeight || h * 0.45);
+  const sky = h - formH; // open scene above the form
+  // tower sized so it always fits the open sky and the screen width
+  const buildingH = Math.max(120, Math.min(sky * 0.74, w * 0.9));
+  const towerW = buildingH * 0.6667;
 
   return (
-    <div ref={rootRef} className="absolute inset-0 overflow-hidden">
-      {/* sky gradient */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, #0b0e14 0%, #11151f 36%, #16203a 64%, #1d2c4d 100%)" }} />
-
-      {/* stars */}
-      <div
-        data-parallax data-fx="0.2"
-        className="absolute inset-[-6%] animate-twinkle"
-        style={{
-          backgroundImage:
-            "radial-gradient(1px 1px at 18% 14%, #ffd35c99, transparent), radial-gradient(1px 1px at 68% 10%, #ffffff77, transparent), radial-gradient(1px 1px at 42% 22%, #ffd35c77, transparent), radial-gradient(1px 1px at 84% 18%, #ffffff66, transparent), radial-gradient(1px 1px at 55% 6%, #ffd35c66, transparent), radial-gradient(1px 1px at 9% 26%, #ffffff55, transparent), radial-gradient(1px 1px at 30% 9%, #ffffff44, transparent)",
-        }}
-      />
+    <div ref={rootRef} className="absolute inset-0 overflow-hidden bg-ink">
+      {/* full-bleed sky-city background — one portrait image, never crops the sky weirdly */}
+      <div data-parallax data-fx="0.3" className="absolute inset-[-4%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/assets/build/cityscape.png" alt="" className="pixelated h-full w-full scale-105 object-cover object-top" draggable={false} />
+      </div>
+      {/* darken toward the bottom so the form sits cleanly under the scene */}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(11,14,20,0.15) 0%, rgba(11,14,20,0.05) 45%, rgba(11,14,20,0.85) 100%)" }} />
 
       {ready && (
-        <>
-          {/* sky-city skyline backdrop — fills the whole open sky so it's never empty */}
-          <div data-parallax data-fx="0.55" className="absolute inset-x-[-8%]" style={{ top: 0, height: sky }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/build/sky_city_skyline.png" alt="" className="pixelated h-full w-full object-cover object-bottom opacity-95" />
-          </div>
-
-          {/* clouds, in front of the distant city */}
-          <div data-parallax data-fx="0.9" className="absolute inset-x-[-10%] top-0" style={{ height: sky * 0.62 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/build/clouds_far.png" alt="" className="pixelated h-full w-full animate-clouddrift object-cover opacity-65" />
-          </div>
-
-          {/* camera world — the player's build, planted on the form, pans as it rises */}
-          <div className="absolute inset-0 transition-transform duration-700 ease-out" style={{ transform: `translateY(${camY}px)` }}>
-            {/* crane behind the tower */}
-            <div data-parallax data-fx="1.7" className="absolute" style={{ top: -H * 1.06, height: H * 1.06, left: `calc(50% + ${towerW * 0.34}px)`, width: towerW * 0.78 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/build/crane.png" alt="" className="pixelated h-full w-full object-contain object-bottom opacity-90" draggable={false} />
+        /* the player's tower, planted on top of the form, revealed bottom-up */
+        <div
+          data-parallax data-fx="1.1"
+          className="absolute"
+          style={{ bottom: formH, height: buildingH, width: towerW, left: "50%", marginLeft: -towerW / 2 }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/build/hero_tower.png"
+            alt="Your startup, under construction"
+            className="pixelated absolute bottom-0 h-full w-full object-cover object-bottom drop-shadow-[0_0_26px_rgba(245,180,36,0.4)] transition-[clip-path] duration-700 ease-out"
+            style={{ clipPath: `inset(${(1 - bf) * 100}% 0 0 0)` }}
+            draggable={false}
+          />
+          {/* glowing construction line at the current build top */}
+          {bf < 0.999 && (
+            <div className="pointer-events-none absolute inset-x-[-14%] transition-[bottom] duration-700 ease-out" style={{ bottom: `${bf * 100}%` }}>
+              <div className="mx-auto h-[3px] w-[88%] animate-beam bg-gold shadow-[0_0_16px_4px_rgba(245,180,36,0.85)]" />
+              <div className="mx-auto -mt-1 h-2 w-2 animate-floaty rounded-[2px] bg-goldlt shadow-[0_0_12px_3px_rgba(245,180,36,0.9)]" />
             </div>
-
-            {/* the player's tower, revealed bottom-up (base at world y=0) */}
-            <div data-parallax data-fx="1.6" className="absolute left-1/2 -translate-x-1/2" style={{ top: -H, height: H, width: towerW }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/assets/build/hero_tower.png"
-                alt="Your startup, under construction"
-                className="pixelated h-full w-full object-cover object-bottom drop-shadow-[0_0_26px_rgba(245,180,36,0.35)] transition-[clip-path] duration-700 ease-out"
-                style={{ clipPath: `inset(${(1 - bf) * 100}% 0 0 0)` }}
-                draggable={false}
-              />
-            </div>
-
-            {/* construction frontier */}
-            {building && (
-              <div data-parallax data-fx="1.6" className="absolute left-1/2 z-10 -translate-x-1/2 transition-[top] duration-700 ease-out" style={{ top: -bf * H, width: towerW * 1.16 }}>
-                <div className="mx-auto h-[3px] w-[92%] animate-beam bg-gold shadow-[0_0_16px_4px_rgba(245,180,36,0.85)]" />
-                <div className="mx-auto -mt-1 h-2 w-2 animate-floaty rounded-[2px] bg-goldlt shadow-[0_0_12px_3px_rgba(245,180,36,0.9)]" />
-              </div>
-            )}
-
-            {/* foreground street + lamps at the tower's foot */}
-            <div data-parallax data-fx="2.2" className="absolute inset-x-[-10%]" style={{ top: -h * 0.03, height: h * 0.3 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/build/ground_plate.png" alt="" className="pixelated h-full w-full object-cover object-top" draggable={false} />
-            </div>
-          </div>
-        </>
+          )}
+        </div>
       )}
 
       {/* floor counter chip */}
