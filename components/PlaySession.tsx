@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { WORLDS } from "@/lib/curriculum";
 import { levelFromXp } from "@/lib/progress";
 import type { GrowthPath, PlayerState, Question, World } from "@/lib/types";
-import StartupTower from "./StartupTower";
+import CityScene from "./CityScene";
 
 type Phase = "choose" | "question" | "levelup" | "victory";
 
@@ -136,14 +136,11 @@ export default function PlaySession({
 
   return (
     <main className="relative min-h-[100dvh] overflow-hidden">
-      {/* fixed pixel-sky background */}
-      <div className="fixed inset-0 -z-10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/scene.png" alt="" className="pixelated h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/70 to-ink/92" />
-      </div>
+      {/* full-screen living parallax scene that builds as you progress */}
+      <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
 
-      <div className="mx-auto flex h-[100dvh] max-w-md flex-col px-3 pb-3 pt-3">
+      {/* top HUD glass bar */}
+      <div className="absolute inset-x-0 top-0 z-30 mx-auto w-full max-w-md px-3 pt-3">
         <Hud
           level={level}
           xp={player.xp}
@@ -154,14 +151,19 @@ export default function PlaySession({
           total={questions.length}
           showProgress={phase === "question"}
         />
+      </div>
 
-        {/* the startup, building block by block */}
-        <div className="relative mt-2 h-[32vh] min-h-[160px] shrink-0">
-          <StartupTower fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
-        </div>
-
-        {/* quiz / transitions — scrollable so long questions always fit */}
-        <div className="mt-2 flex flex-1 flex-col overflow-y-auto pb-2">
+      {/* quiz bottom-sheet — floats above the scene, growth stays visible in the sky above it */}
+      <div className="absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md" style={{ height: "56dvh" }}>
+        {/* frosted panel with a feathered top so the scene shows through the seam */}
+        <div
+          className="absolute inset-0 rounded-t-3xl border-t-2 border-line bg-ink/72 backdrop-blur-md"
+          style={{
+            maskImage: "linear-gradient(to bottom, transparent 0, black 60px)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0, black 60px)",
+          }}
+        />
+        <div className="relative flex h-full flex-col overflow-y-auto px-4 pb-5 pt-7">
           <AnimatePresence mode="wait">
             {phase === "choose" && world.branching && (
               <motion.div
@@ -295,7 +297,7 @@ function QuestionCard({
 }) {
   const [hint, setHint] = useState(false);
   return (
-    <div className="rounded-2xl border-2 border-line bg-ink/85 p-5 shadow-pixel backdrop-blur">
+    <div className="px-1">
       <h2 className="text-xl leading-snug text-parchment">{q.prompt}</h2>
 
       {q.hint && !revealed && (
@@ -374,7 +376,7 @@ function PathChooser({
   onPick: (id: string) => void;
 }) {
   return (
-    <div className="rounded-2xl border-2 border-line bg-ink/85 p-5 shadow-pixel backdrop-blur">
+    <div className="px-1">
       <p className="font-pixel text-[10px] uppercase text-quest">🧭 {world.title}</p>
       <h2 className="mt-2 text-xl text-parchment">Choose your growth path</h2>
       <p className="mt-1 text-sm text-muted">Each motion teaches its own metrics. Pick one to continue.</p>

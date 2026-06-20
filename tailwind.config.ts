@@ -49,12 +49,27 @@ const config: Config = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        clouddrift: {
+          "0%": { transform: "translateX(-2%)" },
+          "100%": { transform: "translateX(2%)" },
+        },
+        twinkle: {
+          "0%,100%": { opacity: "0.25" },
+          "50%": { opacity: "0.6" },
+        },
+        beam: {
+          "0%,100%": { opacity: "0.7" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         floaty: "floaty 3s ease-in-out infinite",
         popin: "popin 0.25s ease-out",
         shake: "shake 0.4s ease-in-out",
         shimmer: "shimmer 2.5s linear infinite",
+        clouddrift: "clouddrift 24s ease-in-out infinite alternate",
+        twinkle: "twinkle 3.5s ease-in-out infinite",
+        beam: "beam 1.6s ease-in-out infinite",
       },
     },
   },
