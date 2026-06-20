@@ -21,7 +21,8 @@ export default function CityScene({
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [{ w, h }, setSize] = useState({ w: 0, h: 0 });
-  const bf = Math.max(0.04, Math.min(1, fraction));
+  // never below ~lobby+2 floors, so the building is always visible from level 1
+  const bf = Math.max(0.15, Math.min(1, fraction));
 
   useLayoutEffect(() => {
     const el = rootRef.current;
@@ -75,8 +76,8 @@ export default function CityScene({
   const ready = h > 0 && w > 0;
   const formH = Math.min(h * 0.85, formHeight || h * 0.45);
   const sky = h - formH; // open scene above the form
-  // a modest tower tucked to the SIDE (never centered between HUD and form)
-  const towerW = Math.max(96, Math.min(w * 0.34, 190, sky * 0.62));
+  // a tower tucked to the SIDE (never centered between HUD and form)
+  const towerW = Math.max(110, Math.min(w * 0.42, 220, sky * 0.6));
   const buildingH = towerW / 0.6667;
 
   return (
@@ -86,16 +87,23 @@ export default function CityScene({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/build/cityscape.png" alt="" className="pixelated h-full w-full scale-105 object-cover object-top" draggable={false} />
       </div>
-      {/* darken toward the bottom so the form sits cleanly under the scene */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(11,14,20,0.15) 0%, rgba(11,14,20,0.05) 45%, rgba(11,14,20,0.85) 100%)" }} />
+      {/* subtle bottom vignette for depth (form is opaque and handles the seam) */}
+      <div className="absolute inset-x-0 bottom-0 h-1/3" style={{ background: "linear-gradient(to bottom, transparent, rgba(11,14,20,0.5))" }} />
 
       {ready && (
-        /* the player's tower, planted on top of the form, revealed bottom-up */
-        <div
-          data-parallax data-fx="1.1"
-          className="absolute"
-          style={{ bottom: formH - 4, height: buildingH, width: towerW, left: "4%" }}
-        >
+        <>
+          {/* distant city horizon sitting just above the form, full width — fills the band so it's never empty */}
+          <div data-parallax data-fx="0.5" className="absolute inset-x-[-8%]" style={{ bottom: formH, height: Math.min(sky * 0.55, buildingH * 1.15) }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/build/sky_city_skyline.png" alt="" className="pixelated h-full w-full object-cover object-bottom opacity-90" draggable={false} />
+          </div>
+
+          {/* the player's tower, tucked to the side, planted on the form, revealed bottom-up */}
+          <div
+            data-parallax data-fx="1.1"
+            className="absolute"
+            style={{ bottom: formH - 4, height: buildingH, width: towerW, left: "4%" }}
+          >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/assets/build/hero_tower.png"
@@ -111,7 +119,8 @@ export default function CityScene({
               <div className="mx-auto -mt-1 h-2 w-2 animate-floaty rounded-[2px] bg-goldlt shadow-[0_0_12px_3px_rgba(245,180,36,0.9)]" />
             </div>
           )}
-        </div>
+          </div>
+        </>
       )}
 
       {/* floor counter chip */}
