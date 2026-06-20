@@ -75,13 +75,19 @@ export default function Landing() {
           transition={{ duration: 0.5 }}
           className="relative mx-auto w-full max-w-sm"
         >
-          <div className="overflow-hidden rounded-2xl border-2 border-line bg-panel2 shadow-pixel">
+          <div className="relative overflow-hidden rounded-2xl border-2 border-line bg-gradient-to-b from-sky/25 via-panel2 to-panel shadow-pixel">
             <Sprite
               src="/assets/hero.png"
-              emoji="🚀"
+              emoji="🧑‍🚀"
               alt="A pixel-art founder hero overlooking a startup landscape"
-              className="aspect-[4/5] w-full"
+              className="relative z-10 aspect-[4/5] w-full"
+              emojiClassName="text-[6.5rem] sm:text-[8.5rem] animate-floaty"
             />
+            {/* decorative pixel scene behind the hero glyph (shows when art is absent) */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-center gap-1 pb-3 text-3xl opacity-80">
+              🌲🏔️🏰🏔️🌲
+            </div>
+            <div className="pointer-events-none absolute right-5 top-5 text-3xl opacity-80">☀️</div>
           </div>
         </motion.div>
       </section>
