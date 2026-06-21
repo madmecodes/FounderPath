@@ -35,12 +35,12 @@ export default function Landing() {
         )}
       </div>
 
-      {/* founder, standing in the foreground on the left (desktop) */}
+      {/* founder gazing at the city, standing in the foreground on the left (desktop) */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/assets/char/idle.png"
-        alt="The founder"
-        className="pointer-events-none absolute bottom-0 left-[3%] z-10 hidden h-[64%] animate-floaty object-contain object-bottom pixelated drop-shadow-[0_8px_20px_rgba(0,0,0,0.6)] md:block"
+        src="/assets/hero-founder.png"
+        alt="The founder gazing at the startup city"
+        className="pointer-events-none absolute bottom-0 left-[4%] z-10 hidden h-[82%] animate-floaty object-contain object-bottom pixelated drop-shadow-[0_10px_24px_rgba(0,0,0,0.55)] md:block"
       />
 
       {/* hero content — centered on mobile, center-right on desktop */}
