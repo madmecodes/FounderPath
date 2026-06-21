@@ -142,7 +142,7 @@ export default function PlaySession({
 
       {/* ONE compact quiz card, centered — header + question together, no gaps */}
       <div className="relative z-20 flex h-full items-center justify-center px-3 py-4">
-        <div className="no-scrollbar flex max-h-[94dvh] w-full max-w-md flex-col overflow-y-auto rounded-2xl border-2 border-line bg-ink/92 p-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-md">
+        <div className="no-scrollbar flex max-h-[94dvh] w-full max-w-md flex-col overflow-y-auto rounded-2xl border-2 border-line bg-ink/95 p-5 shadow-[0_12px_48px_rgba(0,0,0,0.7)] backdrop-blur-md">
           {/* compact header */}
           <div className="flex items-center justify-between gap-2">
             <span className="font-pixel text-[9px] leading-relaxed text-quest">
