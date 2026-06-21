@@ -4,7 +4,7 @@ import type { World } from "./types";
 export const passThreshold = 0.7;
 
 /**
- * FounderPath curriculum. Fourteen worlds tracing the real startup lifecycle,
+ * TheFounderPath curriculum. Fourteen worlds tracing the real startup lifecycle,
  * from "what is a share" to "the exit". World 10 (The Crossroads) branches into
  * a player-chosen growth path. Content is grounded in the source material and
  * enriched with standard founder concepts (vesting, 83(b), NRR, AARRR, etc).

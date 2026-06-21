@@ -57,7 +57,7 @@ export default function Landing() {
       <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-4">
         <div className="flex items-center gap-2">
           <span className="text-2xl">🛡️</span>
-          <span className="font-pixel text-sm text-gold" style={shadow}>FounderPath</span>
+          <span className="font-pixel text-sm text-gold" style={shadow}>TheFounderPath</span>
         </div>
         {started && (
           <Link href="/profile" className="grid h-9 w-9 place-items-center rounded-lg border-2 border-line bg-ink/60 text-lg backdrop-blur" aria-label="Profile">
