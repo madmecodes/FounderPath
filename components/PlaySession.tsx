@@ -43,6 +43,8 @@ export default function PlaySession({
   const [correctIds, setCorrectIds] = useState<string[]>([]);
   const [hearts, setHearts] = useState(3);
   const [lastXp, setLastXp] = useState(0);
+  // founder reaction sprite: idle while answering, random happy on correct, random introspective on wrong
+  const [reaction, setReaction] = useState<{ mood: "idle" | "happy" | "think"; n: number }>({ mood: "idle", n: 0 });
 
   // Re-entrancy guard: advancing must happen exactly once per question, even if
   // the player double-taps Continue during the transition animation.
@@ -82,6 +84,7 @@ export default function PlaySession({
     setSelected(null);
     setRevealed(false);
     setHearts(3);
+    setReaction({ mood: "idle", n: 0 });
     setPhase(w.branching && !cp ? "choose" : "question");
     window.scrollTo({ top: 0 });
   };
@@ -104,7 +107,9 @@ export default function PlaySession({
     if (revealed) return;
     setSelected(idx);
     setRevealed(true);
-    if (idx === q.correct) {
+    const ok = idx === q.correct;
+    setReaction({ mood: ok ? "happy" : "think", n: Math.floor(Math.random() * 3) });
+    if (ok) {
       if (!correctIds.includes(q.id)) setCorrectIds((p) => [...p, q.id]);
     } else {
       setHearts((h) => Math.max(0, h - 1));
@@ -114,6 +119,7 @@ export default function PlaySession({
   const next = () => {
     if (lockRef.current) return;
     lockRef.current = true;
+    setReaction({ mood: "idle", n: 0 });
     const latest =
       selected === q.correct && !correctIds.includes(q.id) ? [...correctIds, q.id] : correctIds;
     if (qIdx === questions.length - 1) {
@@ -139,6 +145,20 @@ export default function PlaySession({
     <main className="relative h-[100dvh] overflow-hidden">
       {/* ambient scene: sky-city + the tower rising on the left */}
       <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
+
+      {/* the founder reacts on the right — happy on correct, introspective on wrong */}
+      <div className="pointer-events-none absolute bottom-0 right-0 z-10" style={{ width: "clamp(130px, 22vw, 250px)" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={`${reaction.mood}-${reaction.n}`}
+          src={`/assets/char/${reaction.mood === "idle" ? "idle" : `${reaction.mood}-${reaction.n}`}.png`}
+          alt=""
+          className="pixelated h-auto w-full animate-popin"
+          style={{ filter: "drop-shadow(0 6px 14px rgba(0,0,0,0.55))" }}
+          onError={(e) => ((e.currentTarget.style.visibility = "hidden"))}
+          onLoad={(e) => ((e.currentTarget.style.visibility = "visible"))}
+        />
+      </div>
 
       {/* ONE compact quiz card, centered — header + question together, no gaps */}
       <div className="relative z-20 flex h-full items-center justify-center px-3 py-4">

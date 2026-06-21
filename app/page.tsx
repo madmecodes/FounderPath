@@ -13,7 +13,7 @@ export default function Landing() {
 
   return (
     <main className="relative min-h-[100dvh] overflow-hidden bg-ink">
-      {/* full-bleed pixel scene + character */}
+      {/* full-bleed pixel scene */}
       <div className="absolute inset-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -21,14 +21,14 @@ export default function Landing() {
           alt="A pixel-art founder gazing at a startup city at sunrise"
           className="pixelated h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-transparent" />
+        {/* readability: darken bottom + a gentle vignette */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-transparent" />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 30%, transparent 30%, rgba(11,14,20,0.5) 100%)" }} />
       </div>
 
-      {/* content column — mobile-first */}
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-md flex-col px-6 py-7">
+      <div className="relative z-10 flex min-h-[100dvh] flex-col">
         {/* top bar */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-5 py-4">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🛡️</span>
             <span className="font-pixel text-sm text-gold">FoundrQuest</span>
@@ -44,45 +44,47 @@ export default function Landing() {
           )}
         </div>
 
-        {/* title */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mt-8"
-        >
-          <p className="label-quest text-quest">The startup founder RPG</p>
-          <h1 className="h-pixel mt-3 text-3xl leading-[1.2]">
-            <span className="text-parchment">LEVEL UP</span>
-            <br />
-            <span className="text-gold drop-shadow-[0_3px_0_#a6790f]">YOUR STARTUP</span>
-          </h1>
-        </motion.div>
-
         <div className="flex-1" />
 
-        {/* play */}
+        {/* hero — anchored lower, over the dark gradient so it's always readable */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.4 }}
-          className="space-y-4 text-center"
+          transition={{ duration: 0.5 }}
+          className="mx-auto w-full max-w-xl px-6 pb-10 text-center"
         >
-          <p className="text-lg text-parchment/90">
-            Answer your way from <span className="text-gold">idea</span> to{" "}
-            <span className="text-gold">exit</span>. Each level you clear unlocks the next.
+          <p className="label-quest text-quest" style={{ textShadow: "0 2px 6px rgba(0,0,0,0.8)" }}>
+            The startup founder RPG
+          </p>
+          <h1
+            className="h-pixel mt-3 text-3xl leading-[1.18] sm:text-4xl"
+            style={{ textShadow: "0 3px 0 rgba(0,0,0,0.55), 0 6px 16px rgba(0,0,0,0.6)" }}
+          >
+            <span className="text-parchment">LEVEL UP</span>
+            <br />
+            <span className="text-gold">YOUR STARTUP</span>
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-md text-lg text-parchment/90" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}>
+            Answer your way from <span className="text-goldlt">idea</span> to{" "}
+            <span className="text-goldlt">exit</span>. Master equity, fundraising, growth & the exit —
+            one quick question at a time.
           </p>
 
-          <Link href="/play" className="pixel-btn-gold block w-full !py-5 text-sm">
+          <Link href="/play" className="pixel-btn-gold mx-auto mt-7 block w-full max-w-sm !py-5 text-sm">
             {allDone ? "▶ Play again" : started ? `▶ Continue · Level ${Math.min(cleared + 1, WORLDS.length)}` : "▶ Play"}
           </Link>
 
-          {started && (
-            <p className="font-pixel text-[9px] text-parchment/70">
-              ⭐ {player.xp} XP · {cleared}/{WORLDS.length} levels cleared
-            </p>
-          )}
-          <p className="font-pixel text-[8px] text-muted">{WORLDS.length} levels · free · no sign-up</p>
+          <div className="mt-4 flex items-center justify-center gap-4 font-pixel text-[9px] text-parchment/80">
+            {started && (
+              <span className="text-goldlt">★ {player.xp} XP</span>
+            )}
+            <span>{WORLDS.length} levels</span>
+            <span className="text-muted">·</span>
+            <span>free</span>
+            <span className="text-muted">·</span>
+            <span>no sign-up</span>
+          </div>
         </motion.div>
       </div>
     </main>
