@@ -389,7 +389,7 @@ function QuestionCard({
   const [hint, setHint] = useState(false);
   return (
     <div className="px-1">
-      <h2 className="text-xl leading-snug text-parchment">{q.prompt}</h2>
+      <h2 className="text-2xl leading-snug text-parchment">{q.prompt}</h2>
 
       {q.hint && !revealed && (
         <button
@@ -418,7 +418,7 @@ function QuestionCard({
               key={idx}
               disabled={revealed}
               onClick={() => onChoose(idx)}
-              className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[1.05rem] transition-all ${cls}`}
+              className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-[1.22rem] leading-snug transition-all ${cls}`}
             >
               <span className="grid h-6 w-6 shrink-0 place-items-center rounded border-2 border-current font-pixel text-[9px]">
                 {String.fromCharCode(65 + idx)}
@@ -446,7 +446,7 @@ function QuestionCard({
               <span className="text-ember">✕ Not quite</span>
             )}
           </p>
-          <p className="mt-2 text-parchment/90">{q.explanation}</p>
+          <p className="mt-2 text-lg text-parchment/90">{q.explanation}</p>
           <button onClick={onNext} className="pixel-btn-gold mt-4 w-full">
             {isLast ? "Finish Level ▸" : "Continue ▸"}
           </button>
