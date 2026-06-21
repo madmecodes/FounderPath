@@ -46,6 +46,21 @@ export default function PlaySession({
   // founder reaction sprite: idle while answering, random happy on correct, random introspective on wrong
   const [reaction, setReaction] = useState<{ mood: "idle" | "happy" | "think"; n: number }>({ mood: "idle", n: 0 });
   const [guideOpen, setGuideOpen] = useState(false);
+  const [showIntro, setShowIntro] = useState(false);
+  const introInit = useRef(false);
+  useEffect(() => {
+    if (introInit.current) return;
+    introInit.current = true;
+    if (!player.introSeen) setShowIntro(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const dismissIntro = () => {
+    update((p) => {
+      p.introSeen = true;
+      return p;
+    });
+    setShowIntro(false);
+  };
 
   // Re-entrancy guard: advancing must happen exactly once per question, even if
   // the player double-taps Continue during the transition animation.
@@ -146,6 +161,49 @@ export default function PlaySession({
     <main className="relative h-[100dvh] overflow-hidden">
       {/* ambient scene: sky-city + the tower rising on the left */}
       <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
+
+      {/* One-time intro: what kind of startup this game is about */}
+      {showIntro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-4 backdrop-blur-sm">
+          <div className="no-scrollbar max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-xl border-2 border-gold bg-panel p-5 shadow-pixel-gold">
+            <p className="font-pixel text-[10px] uppercase text-quest">🚀 First, the basics</p>
+            <h2 className="h-pixel mt-2 text-base text-gold">What kind of startup?</h2>
+            <p className="mt-3 text-parchment/90">
+              This game is about <span className="text-goldlt">venture-backed</span> startups —
+              high-growth companies built to scale fast and exit big. That&apos;s different from a
+              lifestyle or small business (great too, just a different game).
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-lg border-2 border-gold/50 bg-panel2 p-3">
+                <p className="font-pixel text-[9px] uppercase text-gold">Venture-backed</p>
+                <ul className="mt-2 space-y-1 text-sm text-parchment/85">
+                  <li>◆ Huge market ($100M+)</li>
+                  <li>◆ Scales on tech / software / AI</li>
+                  <li>◆ Raises VC, spends to grow</li>
+                  <li>◆ Exits or IPOs in ~7–10 yrs</li>
+                </ul>
+              </div>
+              <div className="rounded-lg border-2 border-line bg-panel2 p-3">
+                <p className="font-pixel text-[9px] uppercase text-muted">Lifestyle / small biz</p>
+                <ul className="mt-2 space-y-1 text-sm text-parchment/70">
+                  <li>◇ Steady &amp; profitable</li>
+                  <li>◇ Runs for income</li>
+                  <li>◇ Bootstrapped / LLC</li>
+                  <li>◇ Keep &amp; operate, no exit</li>
+                </ul>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-muted">
+              Its core: a strong founding team + a big, executable idea — funded by issuing new
+              shares to investors round after round, from idea → exit. That&apos;s what these {total}{" "}
+              levels teach.
+            </p>
+            <button onClick={dismissIntro} className="pixel-btn-gold mt-5 w-full">
+              Start your journey ▸
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Levels guide button (side) */}
       <button

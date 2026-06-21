@@ -16,6 +16,7 @@ export const emptyPlayer = (): PlayerState => ({
   worlds: {},
   badges: [],
   onboarded: false,
+  introSeen: false,
 });
 
 function load(): PlayerState {

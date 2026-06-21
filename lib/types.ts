@@ -89,4 +89,6 @@ export interface PlayerState {
   badges: string[];
   /** Onboarding complete. */
   onboarded: boolean;
+  /** Seen the one-time "what kind of startup" intro. */
+  introSeen?: boolean;
 }
