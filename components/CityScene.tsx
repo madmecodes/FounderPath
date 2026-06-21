@@ -3,26 +3,23 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /**
- * Background for the quiz: a full-bleed pixel sky-city that never crops awkwardly
- * (one portrait image, object-cover), with the player's startup tower growing
- * bottom-up directly on top of the quiz form as `fraction` (0..1) increases.
- * Deliberately simple and aspect-robust — no fragile multi-layer camera math.
+ * Ambient background behind the (centered, compact) quiz card: a full-bleed
+ * pixel sky-city, a distant skyline along the bottom, and the player's startup
+ * tower rising on the LEFT side as `fraction` (0..1) grows. Purely scenery — it
+ * never sits between the HUD and the question.
  */
 export default function CityScene({
   fraction,
   floors,
   totalFloors,
-  formHeight,
 }: {
   fraction: number;
   floors: number;
   totalFloors: number;
-  formHeight: number;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [{ w, h }, setSize] = useState({ w: 0, h: 0 });
-  // never below ~lobby+2 floors, so the building is always visible from level 1
-  const bf = Math.max(0.15, Math.min(1, fraction));
+  const bf = Math.max(0.15, Math.min(1, fraction)); // always show lobby+floors
 
   useLayoutEffect(() => {
     const el = rootRef.current;
@@ -34,7 +31,6 @@ export default function CityScene({
     return () => ro.disconnect();
   }, []);
 
-  // subtle pointer / tilt parallax (bg drifts a little, tower a bit more)
   useEffect(() => {
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
@@ -74,57 +70,51 @@ export default function CityScene({
   }, []);
 
   const ready = h > 0 && w > 0;
-  const formH = Math.min(h * 0.85, formHeight || h * 0.45);
-  const sky = h - formH; // open scene above the form
-  // a tower tucked to the SIDE (never centered between HUD and form)
-  const towerW = Math.max(110, Math.min(w * 0.42, 220, sky * 0.6));
-  const buildingH = towerW / 0.6667;
+  const wide = w >= 720;
+  const buildingH = Math.min(h * 0.72, w * (wide ? 0.42 : 0.62));
+  const towerW = buildingH * 0.6667;
 
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden bg-ink">
-      {/* full-bleed sky-city background — one portrait image, never crops the sky weirdly */}
+      {/* sky-city background (one portrait image, never crops the sky weirdly) */}
       <div data-parallax data-fx="0.3" className="absolute inset-[-4%]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/build/cityscape.png" alt="" className="pixelated h-full w-full scale-105 object-cover object-top" draggable={false} />
+        <img src="/assets/build/cityscape.png" alt="" className="pixelated h-full w-full scale-105 object-cover object-center" draggable={false} />
       </div>
-      {/* subtle bottom vignette for depth (form is opaque and handles the seam) */}
-      <div className="absolute inset-x-0 bottom-0 h-1/3" style={{ background: "linear-gradient(to bottom, transparent, rgba(11,14,20,0.5))" }} />
 
       {ready && (
         <>
-          {/* distant city horizon sitting just above the form, full width — fills the band so it's never empty */}
-          <div data-parallax data-fx="0.5" className="absolute inset-x-[-8%]" style={{ bottom: formH, height: Math.min(sky * 0.55, buildingH * 1.15) }}>
+          {/* distant skyline along the bottom = the city your tower stands in */}
+          <div data-parallax data-fx="0.5" className="absolute inset-x-[-8%] bottom-0" style={{ height: h * 0.34 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/build/sky_city_skyline.png" alt="" className="pixelated h-full w-full object-cover object-bottom opacity-90" draggable={false} />
           </div>
 
-          {/* the player's tower, tucked to the side, planted on the form, revealed bottom-up */}
-          <div
-            data-parallax data-fx="1.1"
-            className="absolute"
-            style={{ bottom: formH - 4, height: buildingH, width: towerW, left: "4%" }}
-          >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/assets/build/hero_tower.png"
-            alt="Your startup, under construction"
-            className="pixelated absolute bottom-0 h-full w-full object-cover object-bottom drop-shadow-[0_0_26px_rgba(245,180,36,0.4)] transition-[clip-path] duration-700 ease-out"
-            style={{ clipPath: `inset(${(1 - bf) * 100}% 0 0 0)` }}
-            draggable={false}
-          />
-          {/* glowing construction line at the current build top */}
-          {bf < 0.999 && (
-            <div className="pointer-events-none absolute inset-x-[-14%] transition-[bottom] duration-700 ease-out" style={{ bottom: `${bf * 100}%` }}>
-              <div className="mx-auto h-[3px] w-[88%] animate-beam bg-gold shadow-[0_0_16px_4px_rgba(245,180,36,0.85)]" />
-              <div className="mx-auto -mt-1 h-2 w-2 animate-floaty rounded-[2px] bg-goldlt shadow-[0_0_12px_3px_rgba(245,180,36,0.9)]" />
-            </div>
-          )}
+          {/* the player's tower, rising on the LEFT */}
+          <div data-parallax data-fx="1.1" className="absolute bottom-0" style={{ height: buildingH, width: towerW, left: wide ? "5%" : "-4%" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/build/hero_tower.png"
+              alt="Your startup, under construction"
+              className="pixelated absolute bottom-0 h-full w-full object-cover object-bottom drop-shadow-[0_0_26px_rgba(245,180,36,0.4)] transition-[clip-path] duration-700 ease-out"
+              style={{ clipPath: `inset(${(1 - bf) * 100}% 0 0 0)` }}
+              draggable={false}
+            />
+            {bf < 0.999 && (
+              <div className="pointer-events-none absolute inset-x-[-12%] transition-[bottom] duration-700 ease-out" style={{ bottom: `${bf * 100}%` }}>
+                <div className="mx-auto h-[3px] w-[88%] animate-beam bg-gold shadow-[0_0_16px_4px_rgba(245,180,36,0.85)]" />
+                <div className="mx-auto -mt-1 h-2 w-2 animate-floaty rounded-[2px] bg-goldlt shadow-[0_0_12px_3px_rgba(245,180,36,0.9)]" />
+              </div>
+            )}
           </div>
+
+          {/* gentle vignette so the centered card always pops */}
+          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 35%, rgba(11,14,20,0.55) 100%)" }} />
         </>
       )}
 
       {/* floor counter chip */}
-      <div className="absolute right-3 top-[68px] z-40 rounded-md border border-line bg-ink/70 px-2 py-1 backdrop-blur">
+      <div className="absolute right-3 top-3 z-40 rounded-md border border-line bg-ink/70 px-2 py-1 backdrop-blur">
         <span className="font-pixel text-[8px] text-goldlt">🏗 {floors}/{totalFloors} floors</span>
       </div>
     </div>

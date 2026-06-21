@@ -51,17 +51,6 @@ export default function PlaySession({
     lockRef.current = false;
   }, [qIdx, levelIdx, phase]);
 
-  // Measure the live form height so the scene can plant the tower right on top of it.
-  const formRef = useRef<HTMLDivElement>(null);
-  const [formH, setFormH] = useState(0);
-  useEffect(() => {
-    const el = formRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => setFormH(el.offsetHeight));
-    ro.observe(el);
-    setFormH(el.offsetHeight);
-    return () => ro.disconnect();
-  }, []);
 
   const questions = questionsFor(world, chosenPath);
   const q = questions[Math.min(qIdx, questions.length - 1)];
@@ -147,31 +136,40 @@ export default function PlaySession({
   };
 
   return (
-    <main className="relative min-h-[100dvh] overflow-hidden">
-      {/* full-screen living parallax scene that builds as you progress */}
-      <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} formHeight={formH} />
+    <main className="relative h-[100dvh] overflow-hidden">
+      {/* ambient scene: sky-city + the tower rising on the left */}
+      <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
 
-      {/* top HUD glass bar */}
-      <div className="absolute inset-x-0 top-0 z-30 mx-auto w-full max-w-md px-3 pt-3">
-        <Hud
-          level={level}
-          xp={player.xp}
-          levelIdx={levelIdx}
-          worldTitle={world.title}
-          hearts={hearts}
-          qIdx={qIdx}
-          total={questions.length}
-          showProgress={phase === "question"}
-        />
-      </div>
-
-      {/* quiz form — a solid panel that hugs its content and sits ABOVE the scene */}
-      <div ref={formRef} className="absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md">
-        {/* soft seam so the scene fades into the form instead of a hard line */}
-        <div className="pointer-events-none absolute inset-x-0 -top-14 h-14 bg-gradient-to-b from-transparent to-ink/95" />
-        {/* the opaque form panel */}
-        <div className="absolute inset-0 rounded-t-3xl border-t-2 border-line bg-ink/95 backdrop-blur-md shadow-[0_-16px_48px_rgba(0,0,0,0.6)]" />
-        <div className="no-scrollbar relative flex max-h-[78dvh] flex-col overflow-y-auto px-4 pb-6 pt-6">
+      {/* ONE compact quiz card, centered — header + question together, no gaps */}
+      <div className="relative z-20 flex h-full items-center justify-center px-3 py-4">
+        <div className="no-scrollbar flex max-h-[94dvh] w-full max-w-md flex-col overflow-y-auto rounded-2xl border-2 border-line bg-ink/92 p-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-md">
+          {/* compact header */}
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-pixel text-[9px] leading-relaxed text-quest">
+              LV {levelIdx + 1}/{total} · {world.title}
+            </span>
+            <span className="flex shrink-0 items-center gap-2 font-pixel text-[9px]">
+              <span className="text-heart">
+                {"♥".repeat(hearts)}
+                <span className="text-line">{"♥".repeat(3 - hearts)}</span>
+              </span>
+              <span className="text-goldlt">{"★"}{player.xp}</span>
+            </span>
+          </div>
+          {phase === "question" && (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="h-2 flex-1 overflow-hidden rounded-full border border-line bg-panel2">
+                <div
+                  className="h-full bg-gradient-to-r from-gold to-goldlt transition-all duration-300"
+                  style={{ width: `${Math.min(100, Math.round((Math.min(qIdx, questions.length) / questions.length) * 100))}%` }}
+                />
+              </div>
+              <span className="font-pixel text-[8px] text-muted">
+                {Math.min(qIdx + 1, questions.length)}/{questions.length}
+              </span>
+            </div>
+          )}
+          <div className="mt-4">
           <AnimatePresence mode="wait">
             {phase === "choose" && world.branching && (
               <motion.div
@@ -227,6 +225,7 @@ export default function PlaySession({
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
         </div>
       </div>
     </main>
