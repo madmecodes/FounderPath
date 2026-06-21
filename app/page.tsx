@@ -40,11 +40,11 @@ export default function Landing() {
       <img
         src="/assets/hero-founder.png"
         alt="The founder gazing at the startup city"
-        className="pointer-events-none absolute bottom-0 left-0 z-0 h-[58%] animate-floaty object-contain object-left-bottom pixelated drop-shadow-[0_10px_24px_rgba(0,0,0,0.55)] md:left-[4%] md:h-[82%]"
+        className="pointer-events-none absolute bottom-0 left-0 z-0 h-[48%] animate-floaty object-contain object-left-bottom pixelated drop-shadow-[0_10px_24px_rgba(0,0,0,0.55)] md:left-[4%] md:h-[82%]"
       />
 
       {/* hero content — centered on mobile, center-right on desktop */}
-      <div className="relative z-10 flex h-full items-center justify-center px-6 md:justify-end md:pr-[8%]">
+      <div className="relative z-10 flex h-full items-start justify-center px-6 pt-16 md:items-center md:justify-end md:pr-[8%] md:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

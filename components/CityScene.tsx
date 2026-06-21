@@ -71,7 +71,7 @@ export default function CityScene({
 
   const ready = h > 0 && w > 0;
   const wide = w >= 720;
-  const buildingH = Math.min(h * 0.72, w * (wide ? 0.42 : 0.62));
+  const buildingH = Math.min(h * 0.72, w * (wide ? 0.42 : 0.74));
   const towerW = buildingH * 0.6667;
 
   return (
@@ -91,7 +91,7 @@ export default function CityScene({
           </div>
 
           {/* the player's tower, rising on the LEFT */}
-          <div data-parallax data-fx="1.1" className="absolute bottom-0" style={{ height: buildingH, width: towerW, left: wide ? "5%" : "-4%" }}>
+          <div data-parallax data-fx="1.1" className="absolute bottom-0" style={{ height: buildingH, width: towerW, left: wide ? "5%" : "-2%" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/assets/build/hero_tower.png"

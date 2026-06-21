@@ -147,7 +147,7 @@ export default function PlaySession({
       <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
 
       {/* the founder reacts on the right — happy on correct, introspective on wrong */}
-      <div className="pointer-events-none absolute bottom-0 right-0 z-10" style={{ width: "clamp(130px, 22vw, 250px)" }}>
+      <div className="pointer-events-none absolute bottom-0 right-0 z-10" style={{ width: "clamp(150px, 42vw, 250px)" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           key={`${reaction.mood}-${reaction.n}`}
@@ -160,12 +160,12 @@ export default function PlaySession({
         />
       </div>
 
-      {/* ONE compact quiz card, centered — header + question together, no gaps */}
-      <div className="relative z-20 flex h-full items-center justify-center px-3 py-4">
+      {/* compact quiz card — top-aligned on mobile so the bottom is a scene stage; centered on desktop */}
+      <div className="relative z-20 flex h-full items-start justify-center px-3 pb-2 pt-12 md:items-center md:py-4">
         <div
-          className="no-scrollbar flex max-h-[94dvh] w-full max-w-md flex-col overflow-y-auto rounded-xl p-5"
+          className="no-scrollbar flex max-h-[68dvh] w-full max-w-md flex-col overflow-y-auto rounded-xl p-5 backdrop-blur-md md:max-h-[90dvh]"
           style={{
-            backgroundColor: "#1c2747",
+            backgroundColor: "rgba(28,39,71,0.82)",
             backgroundImage:
               "repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px)",
             boxShadow:
