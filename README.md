@@ -4,7 +4,7 @@ A pixel-art RPG that teaches the entire startup journey — equity, valuations, 
 notes, SAFEs, fundraising, growth, retention, team scaling, and the exit — one quick question
 at a time. Learn by playing through **14 unlockable levels, idea → exit**.
 
-**▶ Play it live: https://founderpath-ayushguptadevs-projects.vercel.app**
+**▶ Play it live: https://thefounderpath.vercel.app**
 
 ![FounderPath](docs/landing.png)
 
