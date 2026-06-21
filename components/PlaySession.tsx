@@ -165,7 +165,7 @@ export default function PlaySession({
       {/* One-time intro: what kind of startup this game is about */}
       {showIntro && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-4 backdrop-blur-sm">
-          <div className="no-scrollbar max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-xl border-2 border-gold bg-panel p-5 shadow-pixel-gold">
+          <div className="no-scrollbar max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-xl border-2 border-gold bg-panel p-5 shadow-pixel-gold sm:max-w-3xl sm:p-6">
             <p className="font-pixel text-[10px] uppercase text-quest">🚀 First, the basics</p>
             <h2 className="h-pixel mt-2 text-base text-gold">What kind of startup?</h2>
             <p className="mt-3 text-parchment/90">
@@ -178,7 +178,7 @@ export default function PlaySession({
                 <p className="font-pixel text-[9px] uppercase text-gold">Venture-backed</p>
                 <ul className="mt-2 space-y-1 text-sm text-parchment/85">
                   <li>◆ Huge market ($100M+)</li>
-                  <li>◆ Scales on tech / software / AI</li>
+                  <li>◆ Scales on tech/software/AI</li>
                   <li>◆ Raises VC, spends to grow</li>
                   <li>◆ Exits or IPOs in ~7–10 yrs</li>
                 </ul>
