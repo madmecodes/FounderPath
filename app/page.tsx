@@ -40,7 +40,7 @@ export default function Landing() {
       <img
         src="/assets/hero-founder.png"
         alt="The founder gazing at the startup city"
-        className="pointer-events-none absolute bottom-0 left-1/2 z-0 h-[64%] -translate-x-1/2 animate-floaty object-contain object-bottom pixelated drop-shadow-[0_10px_24px_rgba(0,0,0,0.55)] md:left-[4%] md:h-[82%] md:translate-x-0"
+        className="pointer-events-none absolute bottom-0 left-0 z-0 h-[58%] animate-floaty object-contain object-left-bottom pixelated drop-shadow-[0_10px_24px_rgba(0,0,0,0.55)] md:left-[4%] md:h-[82%]"
       />
 
       {/* hero content — centered on mobile, center-right on desktop */}
@@ -57,12 +57,6 @@ export default function Landing() {
             <br />
             <span className="text-gold">YOUR STARTUP</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-md text-lg text-parchment/90 md:mx-0" style={shadow}>
-            Answer your way from <span className="text-goldlt">idea</span> to{" "}
-            <span className="text-goldlt">exit</span> — equity, fundraising, growth & the exit, one
-            quick question at a time.
-          </p>
-
           <Link href="/play" className="pixel-btn-gold mx-auto mt-7 block w-full max-w-sm !py-5 text-sm md:mx-0">
             {allDone ? "▶ Play again" : started ? `▶ Continue · Level ${Math.min(cleared + 1, WORLDS.length)}` : "▶ Play"}
           </Link>
