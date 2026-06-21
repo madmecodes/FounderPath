@@ -1,4 +1,4 @@
-# FoundrQuest
+# FounderPath
 
 A pixel-art RPG that teaches the entire startup-founder journey — equity, valuations,
 convertible notes, SAFEs, fundraising, growth, retention and the exit — by playing through

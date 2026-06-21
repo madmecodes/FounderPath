@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { PlayerState, WorldProgress } from "./types";
 import { WORLDS, passThreshold } from "./curriculum";
 
-const KEY = "foundrquest:player:v1";
+const KEY = "founderpath:player:v1";
+const LEGACY_KEYS = ["foundrquest:player:v1"]; // migrate older saves
 const MAX_HEARTS = 5;
 
 export const emptyPlayer = (): PlayerState => ({
@@ -20,7 +21,18 @@ export const emptyPlayer = (): PlayerState => ({
 function load(): PlayerState {
   if (typeof window === "undefined") return emptyPlayer();
   try {
-    const raw = localStorage.getItem(KEY);
+    let raw = localStorage.getItem(KEY);
+    if (!raw) {
+      // one-time migration from an older storage key
+      for (const k of LEGACY_KEYS) {
+        const old = localStorage.getItem(k);
+        if (old) {
+          raw = old;
+          localStorage.setItem(KEY, old);
+          break;
+        }
+      }
+    }
     if (!raw) return emptyPlayer();
     return { ...emptyPlayer(), ...JSON.parse(raw) };
   } catch {

@@ -17,7 +17,7 @@ const body = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "FoundrQuest — Level Up Your Startup",
+  title: "FounderPath — Level Up Your Startup",
   description:
     "A pixel-art RPG that teaches you the entire founder journey: equity, valuations, convertible notes, SAFEs, fundraising, growth, retention and the exit. Learn by playing.",
 };

@@ -13,7 +13,7 @@ export default function TopBar({ player }: { player: PlayerState }) {
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-3 py-2 sm:gap-4 sm:px-5 sm:py-3">
         <Link href="/map" className="flex shrink-0 items-center gap-2">
           <span className="text-2xl">🛡️</span>
-          <span className="hidden font-pixel text-xs text-gold sm:inline">FoundrQuest</span>
+          <span className="hidden font-pixel text-xs text-gold sm:inline">FounderPath</span>
         </Link>
 
         {/* XP / level */}
