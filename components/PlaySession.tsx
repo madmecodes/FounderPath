@@ -45,6 +45,7 @@ export default function PlaySession({
   const [lastXp, setLastXp] = useState(0);
   // founder reaction sprite: idle while answering, random happy on correct, random introspective on wrong
   const [reaction, setReaction] = useState<{ mood: "idle" | "happy" | "think"; n: number }>({ mood: "idle", n: 0 });
+  const [guideOpen, setGuideOpen] = useState(false);
 
   // Re-entrancy guard: advancing must happen exactly once per question, even if
   // the player double-taps Continue during the transition animation.
@@ -145,6 +146,60 @@ export default function PlaySession({
     <main className="relative h-[100dvh] overflow-hidden">
       {/* ambient scene: sky-city + the tower rising on the left */}
       <CityScene fraction={buildFraction} floors={floorsBuilt} totalFloors={total} />
+
+      {/* Levels guide button (side) */}
+      <button
+        onClick={() => setGuideOpen(true)}
+        className="absolute left-3 top-3 z-40 flex items-center gap-1 rounded-md border border-line bg-ink/70 px-2 py-1 font-pixel text-[8px] text-goldlt backdrop-blur hover:border-gold"
+      >
+        📖 Levels
+      </button>
+
+      {/* Levels guide modal — what each level teaches */}
+      {guideOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-4 backdrop-blur-sm"
+          onClick={() => setGuideOpen(false)}
+        >
+          <div
+            className="no-scrollbar max-h-[88dvh] w-full max-w-md overflow-y-auto rounded-xl border-2 border-line bg-panel p-5 shadow-pixel"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="h-pixel text-sm text-gold">The Founder&apos;s Journey</h2>
+              <button onClick={() => setGuideOpen(false)} className="font-pixel text-xs text-muted hover:text-parchment">✕</button>
+            </div>
+            <p className="mt-1 text-sm text-muted">All {total} levels — what each one teaches you.</p>
+            <ol className="mt-4 space-y-2">
+              {WORLDS.map((w, i) => {
+                const done = !!player.worlds[w.id]?.completed;
+                const current = i === levelIdx;
+                return (
+                  <li
+                    key={w.id}
+                    className={`flex gap-3 rounded-lg border-2 p-3 ${current ? "border-gold bg-gold/10" : "border-line bg-panel2"}`}
+                  >
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded border-2 border-line font-pixel text-[9px] text-goldlt">
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-pixel text-[10px] text-parchment">
+                        {w.icon} {w.title}
+                        {done && <span className="ml-1 text-quest">✓</span>}
+                        {current && <span className="ml-1 text-gold">▸ now</span>}
+                      </p>
+                      <p className="mt-1 text-sm text-muted">{w.objective}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+            <button onClick={() => setGuideOpen(false)} className="pixel-btn-gold mt-4 w-full">
+              Got it ▸
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* the founder reacts on the right — happy on correct, introspective on wrong */}
       <div className="pointer-events-none absolute bottom-0 right-0 z-10" style={{ width: "clamp(150px, 42vw, 250px)" }}>
